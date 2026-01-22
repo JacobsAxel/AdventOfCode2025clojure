@@ -1,10 +1,11 @@
     #include <iostream>
     #include <fstream>
     #include <string>
+    #include <array>
 
     int solution(std::string fileName);
-    int rotateLeft(int start, int rotation);
-    int rotateRight(int start, int rotation);
+    std::array<int,2> rotateLeft(int start, int rotation);
+    std::array<int,2> rotateRight(int start, int rotation);
 
     int main() 
     {
@@ -20,19 +21,29 @@
         
         while(std::getline(MyReadFile,line))
         {
-            int lineResult = (line[0]=='L') ? rotateLeft(index,std::stoi(line.substr(1))) : rotateRight(index,stoi(line.substr(1)));
-            index = lineResult;
-            if(lineResult==0){result+=1;};
+            std::array lineResult = (line[0]=='L') ? rotateLeft(index,std::stoi(line.substr(1))) : rotateRight(index,stoi(line.substr(1)));
+            result += lineResult[0];
+            index = lineResult[1];
         }
         return result;
     }
     
-    int rotateLeft(int start, int rotation)
+    // Return {rotations,new index position}
+    
+    std::array<int,2> rotateLeft(int start, int rotation)
     {
-        return (start - rotation + 100) % 100;
+        int rotations = rotation/100;
+        int rest = rotation%100;
+
+        if(rest > 0 && start <= rest && start > 0)
+        {
+            rotations += 1;
+        }
+
+        return {rotations,(start - rest + 100) % 100};
     }
 
-int rotateRight(int start, int rotation)
+    std::array<int,2> rotateRight(int start, int rotation)
     {
-        return (start + rotation) % 100;
+        return {(start + rotation) / 100,(start + rotation) % 100};
     }
